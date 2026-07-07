@@ -702,6 +702,7 @@ public partial class FireworkOverlayWindow : Window
         }
 
         _gpuParticlePhysics.Reset();
+        _scene.ResetRenderer();
     }
 
     private void BurstApexRocketsBeforeDisplayChange()

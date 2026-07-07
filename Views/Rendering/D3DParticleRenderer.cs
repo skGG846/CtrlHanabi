@@ -164,6 +164,11 @@ internal sealed class D3DParticleRenderer : IDisposable
         }
     }
 
+    public void Reset()
+    {
+        ReleaseDirect3DResources();
+    }
+
     public void Dispose()
     {
         _isDisposed = true;

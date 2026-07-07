@@ -95,6 +95,11 @@ internal sealed class ParticleSceneElement : FrameworkElement
         InvalidateVisual();
     }
 
+    public void ResetRenderer()
+    {
+        _particleRenderer.Reset();
+    }
+
     protected override void OnRender(DrawingContext drawingContext)
     {
         if (_renderedWithGpu)
@@ -149,7 +154,7 @@ internal sealed class ParticleSceneElement : FrameworkElement
         foreach (var trail in _trails)
         {
             var brush = CreateFallbackBrush(trail.Color, trail.Opacity);
-            DrawFilledCircle(drawingContext, trail.X, trail.Y, trail.Size, brush);
+            DrawFilledCircle(drawingContext, trail.X, trail.Y, trail.Size / 2, brush);
         }
 
         foreach (var particle in _particles)
@@ -157,13 +162,13 @@ internal sealed class ParticleSceneElement : FrameworkElement
             if (particle.GlowOpacity > 0)
             {
                 var glowBrush = CreateFallbackBrush(particle.GlowColor, particle.GlowOpacity);
-                DrawFilledCircle(drawingContext, particle.X, particle.Y, particle.GlowSize, glowBrush);
+                DrawFilledCircle(drawingContext, particle.X, particle.Y, particle.GlowSize / 2, glowBrush);
             }
 
             if (particle.CoreOpacity > 0)
             {
                 var coreBrush = CreateFallbackBrush(particle.CoreColor, particle.CoreOpacity);
-                DrawFilledCircle(drawingContext, particle.X, particle.Y, particle.CoreSize, coreBrush);
+                DrawFilledCircle(drawingContext, particle.X, particle.Y, particle.CoreSize / 2, coreBrush);
             }
         }
     }
