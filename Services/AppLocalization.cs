@@ -30,6 +30,12 @@ public sealed class AppLocalization
         _ => "毎時スターマインを打ち上げ"
     };
 
+    public string GpuPhysicsMenuText(bool enabled) => _language switch
+    {
+        UiLanguage.English => $"GPU physics: {(enabled ? "Enabled" : "Disabled")}",
+        _ => $"GPU物理演算: {(enabled ? "有効" : "無効")}"
+    };
+
     public string ResetSettingsMenuText => _language switch
     {
         UiLanguage.English => "Reset settings",

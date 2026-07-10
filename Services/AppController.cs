@@ -194,6 +194,13 @@ public sealed class AppController : IDisposable
             _settingsService.Save(CopySettings(current, hourlyStarmineEnabled: hourlyStarmineItem.Checked));
         };
 
+        var gpuPhysicsItem = new ToolStripMenuItem
+        {
+            Enabled = false,
+            CheckOnClick = false
+        };
+        UpdateGpuPhysicsMenuItem(gpuPhysicsItem);
+
         var settingsItem = new ToolStripMenuItem(_localization.ResetSettingsMenuText);
         settingsItem.Click += (_, _) =>
         {
@@ -207,14 +214,23 @@ public sealed class AppController : IDisposable
 
         menu.Items.Add(launchItem);
         menu.Items.Add(hourlyStarmineItem);
+        menu.Items.Add(gpuPhysicsItem);
         menu.Items.Add(settingsItem);
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(exitItem);
         menu.Opening += (_, _) =>
         {
             launchItem.Checked = AutoStartService.IsEnabled();
+            UpdateGpuPhysicsMenuItem(gpuPhysicsItem);
         };
         return menu;
+    }
+
+    private void UpdateGpuPhysicsMenuItem(ToolStripMenuItem item)
+    {
+        var enabled = _overlay.IsGpuPhysicsEnabled;
+        item.Text = _localization.GpuPhysicsMenuText(enabled);
+        item.Checked = enabled;
     }
 
     private static HanabiSettings CopySettings(HanabiSettings settings, bool hourlyStarmineEnabled) => new()

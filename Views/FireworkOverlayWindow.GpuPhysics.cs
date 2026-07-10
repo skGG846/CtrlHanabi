@@ -78,6 +78,8 @@ public partial class FireworkOverlayWindow
         private int _pendingReadbackCount;
         private bool _failed;
 
+        public bool IsEnabled => Enabled && !_failed;
+
         public int TryApplyPending(List<Particle> particles)
         {
             if (!Enabled || _failed || _pendingReadbackCount == 0)

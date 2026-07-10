@@ -98,6 +98,8 @@ public partial class FireworkOverlayWindow : Window
     private bool _isStarmineActive;
     private bool _useConfiguredDisplayBounds;
 
+    public bool IsGpuPhysicsEnabled => _gpuParticlePhysics.IsEnabled;
+
     public FireworkOverlayWindow(HanabiSettings settings, ISettingsService settingsService)
     {
         _viewModel = new FireworkOverlayViewModel(settings, settingsService);
