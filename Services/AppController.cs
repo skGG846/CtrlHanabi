@@ -164,7 +164,7 @@ public sealed class AppController : IDisposable
         var menu = new ContextMenuStrip();
         var settings = _settingsService.Load();
 
-        var launchItem = new ToolStripMenuItem(_localization.AutoStartMenuText)
+        var launchItem = new ToolStripMenuItem(_localization.Menu_RunAtStartup)
         {
             Checked = AutoStartService.IsEnabled(),
             CheckOnClick = true
@@ -183,7 +183,7 @@ public sealed class AppController : IDisposable
             launchItem.Checked = AutoStartService.IsEnabled();
         };
 
-        var hourlyStarmineItem = new ToolStripMenuItem(_localization.HourlyStarmineMenuText)
+        var hourlyStarmineItem = new ToolStripMenuItem(_localization.Menu_HourlyStarmine)
         {
             Checked = settings.HourlyStarmineEnabled,
             CheckOnClick = true
@@ -201,7 +201,7 @@ public sealed class AppController : IDisposable
         };
         UpdateGpuPhysicsMenuItem(gpuPhysicsItem);
 
-        var settingsItem = new ToolStripMenuItem(_localization.ResetSettingsMenuText);
+        var settingsItem = new ToolStripMenuItem(_localization.Menu_ResetSettings);
         settingsItem.Click += (_, _) =>
         {
             _settingsService.Save(HanabiSettings.Default);
@@ -209,15 +209,26 @@ public sealed class AppController : IDisposable
             System.Windows.MessageBox.Show(_localization.SettingsResetMessage, AppName);
         };
 
-        var exitItem = new ToolStripMenuItem(_localization.ExitMenuText);
+        var exitItem = new ToolStripMenuItem(_localization.Menu_Exit);
         exitItem.Click += (_, _) => WpfApplication.Current.Dispatcher.Invoke(RequestExit);
 
-        menu.Items.Add(launchItem);
+        // Feature items
         menu.Items.Add(hourlyStarmineItem);
         menu.Items.Add(gpuPhysicsItem);
-        menu.Items.Add(settingsItem);
+
+        // Separator
         menu.Items.Add(new ToolStripSeparator());
+
+        // System / Global settings
+        menu.Items.Add(launchItem);
+        menu.Items.Add(settingsItem);
+
+        // Separator
+        menu.Items.Add(new ToolStripSeparator());
+
+        // Exit
         menu.Items.Add(exitItem);
+
         menu.Opening += (_, _) =>
         {
             launchItem.Checked = AutoStartService.IsEnabled();
@@ -229,7 +240,7 @@ public sealed class AppController : IDisposable
     private void UpdateGpuPhysicsMenuItem(ToolStripMenuItem item)
     {
         var enabled = _overlay.IsGpuPhysicsEnabled;
-        item.Text = _localization.GpuPhysicsMenuText(enabled);
+        item.Text = _localization.Menu_GpuPhysics(enabled);
         item.Checked = enabled;
     }
 

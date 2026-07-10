@@ -18,31 +18,31 @@ public sealed class AppLocalization
         _language = ResolveLanguage(settings.UiLanguage);
     }
 
-    public string AutoStartMenuText => _language switch
+    public string Menu_RunAtStartup => _language switch
     {
         UiLanguage.English => "Run at Windows startup",
         _ => "Windows起動時に実行"
     };
 
-    public string HourlyStarmineMenuText => _language switch
+    public string Menu_HourlyStarmine => _language switch
     {
         UiLanguage.English => "Launch starmine every hour",
         _ => "毎時スターマインを打ち上げ"
     };
 
-    public string GpuPhysicsMenuText(bool enabled) => _language switch
+    public string Menu_GpuPhysics(bool enabled) => _language switch
     {
         UiLanguage.English => $"GPU physics: {(enabled ? "Enabled" : "Disabled")}",
         _ => $"GPU物理演算: {(enabled ? "有効" : "無効")}"
     };
 
-    public string ResetSettingsMenuText => _language switch
+    public string Menu_ResetSettings => _language switch
     {
         UiLanguage.English => "Reset settings",
         _ => "設定をリセット"
     };
 
-    public string ExitMenuText => _language switch
+    public string Menu_Exit => _language switch
     {
         UiLanguage.English => "Exit",
         _ => "終了"
