@@ -17,6 +17,7 @@ internal sealed class D3DParticleRenderer : IDisposable
     private static readonly bool Direct3D11Enabled =
         !string.Equals(Environment.GetEnvironmentVariable("CTRLHANABI_D3D11"), "0", StringComparison.Ordinal);
     private static readonly bool D3DLogEnabled = RuntimeLogging.IsD3D11LogEnabled();
+    private const long RetryIntervalMs = 5000;
 
     private static readonly byte[] PositionSemantic = "POSITION\0"u8.ToArray();
     private static readonly byte[] TexCoordSemantic = "TEXCOORD\0"u8.ToArray();
@@ -74,7 +75,7 @@ internal sealed class D3DParticleRenderer : IDisposable
     private int _softRingInstanceCapacity;
     private bool _isDisposed;
     private bool _direct3D11Failed;
-    private bool _hasDeviceCreated;
+    private long _lastFailureTicks;
 
     public D3DParticleRenderer()
     {
@@ -102,9 +103,22 @@ internal sealed class D3DParticleRenderer : IDisposable
             return false;
         }
 
-        if (!Direct3D11Enabled || _direct3D11Failed || !_image.IsFrontBufferAvailable)
+        if (!Direct3D11Enabled || !_image.IsFrontBufferAvailable)
         {
             return false;
+        }
+
+        if (_direct3D11Failed)
+        {
+            if (Environment.TickCount64 - _lastFailureTicks >= RetryIntervalMs)
+            {
+                _direct3D11Failed = false;
+                Log("Retrying D3D11 initialization after failure interval");
+            }
+            else
+            {
+                return false;
+            }
         }
 
         try
@@ -136,10 +150,8 @@ internal sealed class D3DParticleRenderer : IDisposable
         catch (Exception ex)
         {
             Log("Render failed: " + ex);
-            if (!_hasDeviceCreated)
-            {
-                _direct3D11Failed = true;
-            }
+            _direct3D11Failed = true;
+            _lastFailureTicks = Environment.TickCount64;
             ReleaseDirect3DResources();
             return false;
         }
@@ -216,7 +228,6 @@ internal sealed class D3DParticleRenderer : IDisposable
             }
 
             (_device11, _context11) = D3D11.CreateDevice();
-            _hasDeviceCreated = true;
             Log("D3D11 device created");
             CreatePipeline();
             Log("D3D11 pipeline created");
